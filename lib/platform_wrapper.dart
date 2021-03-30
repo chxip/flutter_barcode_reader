@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 
 import './model/model.dart';
+import 'barcode_scan.dart';
 import 'gen/protos/protos.pb.dart' as proto;
 
 // ignore: avoid_classes_with_only_static_members
@@ -55,7 +55,7 @@ class BarcodeScanner {
         }else if(event == MANUAL_INPUT){
           //手动输入
           subscription.cancel();
-          ScanResult scanResult = ScanResult();
+          var scanResult = ScanResult();
           scanResult.rawContent = MANUAL_INPUT;
           scanResult.type = ResultType.Input;
           completer.complete(scanResult);
