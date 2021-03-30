@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 
 import './model/model.dart';
@@ -54,7 +55,10 @@ class BarcodeScanner {
         }else if(event == MANUAL_INPUT){
           //手动输入
           subscription.cancel();
-          completer.completeError(PlatformException(code: event));
+          ScanResult scanResult = ScanResult();
+          scanResult.rawContent = MANUAL_INPUT;
+          scanResult.type = ResultType.Input;
+          completer.complete(scanResult);
         }
       }
     });

@@ -149,7 +149,7 @@ class ChannelHandler(private val activityHelper: ActivityHelper) : MethodChannel
     }
 
     override fun onCancel(arguments: Any?) {
-      //  Companion.sink = null
+        Companion.sink = null
     }
     // endregion
 }
