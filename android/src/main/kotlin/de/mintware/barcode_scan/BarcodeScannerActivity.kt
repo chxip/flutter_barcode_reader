@@ -44,7 +44,6 @@ class BarcodeScannerActivity : Activity(), ZXingScannerView.ResultHandler {
     // region Activity lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         config = Protos.Configuration.parseFrom(intent.extras!!.getByteArray(EXTRA_CONFIG))
     }
 
@@ -88,8 +87,15 @@ class BarcodeScannerActivity : Activity(), ZXingScannerView.ResultHandler {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == TOGGLE_FLASH) {
-            scannerView?.toggleFlash()
-            this.invalidateOptionsMenu()
+            val type = config.stringsMap["type"]
+            if (type.equals("1")) {
+                scannerView?.toggleFlash()
+                this.invalidateOptionsMenu()
+            } else if (type.equals("2")) {
+                ChannelHandler.sink?.success("MANUAL_INPUT")
+                finish()
+            }
+
             return true
         }
         if (item.itemId == CANCEL) {
@@ -114,6 +120,7 @@ class BarcodeScannerActivity : Activity(), ZXingScannerView.ResultHandler {
         } else {
             scannerView?.startCamera()
         }
+
     }
     // endregion
 

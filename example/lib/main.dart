@@ -244,6 +244,7 @@ class _MyAppState extends State<_MyApp> {
     try {
       var options = ScanOptions(
         strings: {
+          "type": 2.toString(),
           "cancel": _cancelController.text,
           "flash_on": _flashOnController.text,
           "flash_off": _flashOffController.text,

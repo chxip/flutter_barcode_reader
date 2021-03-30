@@ -49,8 +49,7 @@ class ActivityHelper(private var applicationContext: Context?,
                 .onActivityResult(requestCode, resultCode, data)
     }
 
-    fun requestCameraAccessIfNecessary(sink: EventChannel.EventSink?
-    ): Boolean {
+    fun requestCameraAccessIfNecessary(sink: EventChannel.EventSink?): Boolean {
         if (activity == null) {
             Log.d(TAG, "Could not launch BarcodeScannerActivity because the plugin is not attached to any activity")
             return false

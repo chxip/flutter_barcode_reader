@@ -16,6 +16,9 @@ class BarcodeScanner {
   /// If the user has not granted the access to the camera this code is thrown.
   static const cameraAccessDenied = 'PERMISSION_NOT_GRANTED';
 
+  /// 手动输入
+  static const MANUAL_INPUT = 'MANUAL_INPUT';
+
   /// The method channel
   static const MethodChannel _channel =
       MethodChannel('de.mintware.barcode_scan');
@@ -48,6 +51,10 @@ class BarcodeScanner {
         } else if (event == cameraAccessDenied) {
           subscription.cancel();
           completer.completeError(PlatformException(code: event));
+        }else if(event == MANUAL_INPUT){
+          //手动输入
+          subscription.cancel();
+          completer.completeError(PlatformException(code: event));
         }
       }
     });
@@ -58,7 +65,7 @@ class BarcodeScanner {
     if (permissionsRequested) {
       return completer.future;
     } else {
-      subscription.cancel();
+      //subscription.cancel();
       return _doScan(options);
     }
   }

@@ -9,8 +9,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.lang.reflect.Method
 
-class ChannelHandler(private val activityHelper: ActivityHelper
-) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
+class ChannelHandler(private val activityHelper: ActivityHelper) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
 
     @Nullable
     private var methodChannel: MethodChannel? = null
@@ -18,8 +17,10 @@ class ChannelHandler(private val activityHelper: ActivityHelper
     @Nullable
     private var eventChannel: EventChannel? = null
 
-    @Nullable
-    private var sink: EventChannel.EventSink? = null
+    companion object {
+        @Nullable
+        var sink: EventChannel.EventSink? = null
+    }
 
     @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
@@ -53,7 +54,7 @@ class ChannelHandler(private val activityHelper: ActivityHelper
     @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun requestCameraPermission(call: MethodCall, result: MethodChannel.Result) {
-        result.success(activityHelper.requestCameraAccessIfNecessary(sink))
+        result.success(activityHelper.requestCameraAccessIfNecessary(Companion.sink))
     }
 
     fun startListening(messenger: BinaryMessenger?) {
@@ -72,6 +73,21 @@ class ChannelHandler(private val activityHelper: ActivityHelper
         eventChannel = EventChannel(messenger, "de.mintware.barcode_scan/events").apply {
             setStreamHandler(this@ChannelHandler)
         }
+
+        /*eventChannel?.setStreamHandler(object : EventChannel.StreamHandler{
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                TODO("Not yet implemented")
+                sink = events
+            }
+
+            override fun onCancel(arguments: Any?) {
+                TODO("Not yet implemented")
+
+                print("aaaaa")
+            }
+
+        })*/
+
     }
 
     fun stopListening() {
@@ -129,11 +145,11 @@ class ChannelHandler(private val activityHelper: ActivityHelper
     // region StreamHandler
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-        sink = events
+        Companion.sink = events
     }
 
     override fun onCancel(arguments: Any?) {
-        sink = null
+      //  Companion.sink = null
     }
     // endregion
 }
