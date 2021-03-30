@@ -95,7 +95,6 @@ class BarcodeScannerActivity : Activity(), ZXingScannerView.ResultHandler {
                 ChannelHandler.sink?.success("MANUAL_INPUT")
                 finish()
             }
-
             return true
         }
         if (item.itemId == CANCEL) {

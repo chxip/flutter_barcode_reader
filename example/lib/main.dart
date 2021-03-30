@@ -258,10 +258,13 @@ class _MyAppState extends State<_MyApp> {
         ),
       );
 
-      var result = await BarcodeScanner.scan(options: options);
+      // ignore: lines_longer_than_80_chars
+      var result = await BarcodeScanner.scan(options: options,onInputListener: OnListener());
 
       setState(() => scanResult = result);
+
     } on PlatformException catch (e) {
+
       var result = ScanResult(
         type: ResultType.Error,
         format: BarcodeFormat.unknown,
@@ -277,6 +280,18 @@ class _MyAppState extends State<_MyApp> {
       setState(() {
         scanResult = result;
       });
+
     }
   }
+
+}
+
+// 手动输入回调
+class OnListener implements OnInputListener {
+
+  @override
+  void onInput(String code) {
+    print("sdfsdfsdf");
+  }
+
 }

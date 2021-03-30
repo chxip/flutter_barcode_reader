@@ -27,13 +27,16 @@ class BarcodeScanner {
   /// The event channel
   static const EventChannel _eventChannel =
       EventChannel('de.mintware.barcode_scan/events');
+ 
+ 
 
   /// Starts the camera for scanning the barcode, shows a preview window and
   /// returns the barcode if one was scanned.
   /// Can throw an exception.
   /// See also [cameraAccessDenied]
-  static Future<ScanResult> scan({
+  static Future<ScanResult> scan( {
     ScanOptions options = const ScanOptions(),
+    OnInputListener onInputListener,
   }) async {
     assert(options != null);
     if (Platform.isIOS) {
@@ -44,29 +47,29 @@ class BarcodeScanner {
     var completer = Completer<ScanResult>();
 
     StreamSubscription subscription;
+
     subscription = events.listen((event) async {
       if (event is String) {
         if (event == cameraAccessGranted) {
           subscription.cancel();
           completer.complete(await _doScan(options));
-        } else if (event == cameraAccessDenied) {
+        } else if (event == cameraAccessDenied  ) {
           subscription.cancel();
           completer.completeError(PlatformException(code: event));
         }else if(event == MANUAL_INPUT){
-          //手动输入
-          subscription.cancel();
-          var scanResult = ScanResult();
-          scanResult.rawContent = MANUAL_INPUT;
-          scanResult.type = ResultType.Input;
-          completer.complete(scanResult);
+          if(onInputListener!=null){
+
+            onInputListener.onInput(MANUAL_INPUT);
+          }
         }
       }
     });
 
+
     var permissionsRequested =
         await _channel.invokeMethod('requestCameraPermission');
 
-    if (permissionsRequested) {
+    if (permissionsRequested  ) {
       return completer.future;
     } else {
       //subscription.cancel();
@@ -74,6 +77,8 @@ class BarcodeScanner {
     }
   }
 
+
+  
   static Future<ScanResult> _doScan(ScanOptions options) async {
     var config = proto.Configuration()
           ..useCamera = options.useCamera
@@ -100,4 +105,9 @@ class BarcodeScanner {
   static Future<int> get numberOfCameras {
     return _channel.invokeMethod('numberOfCameras');
   }
+}
+
+
+abstract class OnInputListener {
+  void onInput(String code);
 }
