@@ -16,8 +16,9 @@ class BarcodeScannerViewController: UIViewController {
   var config: Configuration = Configuration.with {
     $0.strings = [
       "cancel" : "Cancel",
-      "flash_on" : "Flash on",
-      "flash_off" : "Flash off",
+      "flash_on" : "关闭",
+      "flash_off" : "开启",
+        "type" : "1",
     ]
     $0.useCamera = -1 // Default camera
     $0.autoEnableFlash = false
@@ -171,18 +172,37 @@ class BarcodeScannerViewController: UIViewController {
   @objc private func onToggleFlash() {
     setFlashState(!isFlashOn)
   }
-  
+    ///手动输入
+    @objc private func onInput() {
+        SwiftBarcodeScanPlugin.instance?.eventSink!("MANUAL_INPUT")
+        dismiss(animated: false)
+    }
+      
+    
+    /// <#Description#>
   private func updateToggleFlashButton() {
     if !hasTorch {
       return
     }
     
     let buttonText = isFlashOn ? config.strings["flash_off"] : config.strings["flash_on"]
-    navigationItem.rightBarButtonItem = UIBarButtonItem(title: buttonText,
-                                                        style: .plain,
-                                                        target: self,
-                                                        action: #selector(onToggleFlash)
-    )
+    
+    let type =  config.strings["type"]
+ 
+    
+    if( type == "1"){
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: buttonText,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(onToggleFlash)
+        )
+    }else{
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: buttonText,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(onInput)
+        )
+    }
   }
   
   private func setFlashState(_ on: Bool) {

@@ -3,17 +3,39 @@ import UIKit
 import SwiftProtobuf
 import AVFoundation
 
-public class SwiftBarcodeScanPlugin: NSObject, FlutterPlugin, BarcodeScannerViewControllerDelegate {
+public class SwiftBarcodeScanPlugin: NSObject, FlutterPlugin, BarcodeScannerViewControllerDelegate,FlutterStreamHandler {
+    
+    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.eventSink = events
+        return nil
+    }
+    
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        return nil
+    }
+ 
     
     private var result: FlutterResult?
     private var hostViewController: UIViewController?
     
+    // 定义FlutterEventSink的缓存对象
+    public var  eventSink : FlutterEventSink?;
+    public static var instance:SwiftBarcodeScanPlugin?
+     
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "de.mintware.barcode_scan", binaryMessenger: registrar.messenger())
-        let instance = SwiftBarcodeScanPlugin()
-        instance.hostViewController = UIApplication.shared.delegate?.window??.rootViewController
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        instance = SwiftBarcodeScanPlugin()
+        instance!.hostViewController = UIApplication.shared.delegate?.window??.rootViewController
+        registrar.addMethodCallDelegate(instance!, channel: channel)
+        
+        // 初始化FlutterEventChannel对象
+        let eventChannel = FlutterEventChannel(name: "de.mintware.barcode_scan/events",binaryMessenger:registrar.messenger());
+        eventChannel.setStreamHandler(instance!)
     }
+    
+    
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         self.result = result

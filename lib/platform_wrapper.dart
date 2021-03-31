@@ -39,9 +39,9 @@ class BarcodeScanner {
     OnInputListener onInputListener,
   }) async {
     assert(options != null);
-    if (Platform.isIOS) {
+    /*if (Platform.isIOS) {
       return _doScan(options);
-    }
+    }*/
 
     var events = _eventChannel.receiveBroadcastStream();
     var completer = Completer<ScanResult>();

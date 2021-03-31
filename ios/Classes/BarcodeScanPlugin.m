@@ -10,6 +10,7 @@
 
 @implementation BarcodeScanPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    
   [SwiftBarcodeScanPlugin registerWithRegistrar:registrar];
 }
 @end
